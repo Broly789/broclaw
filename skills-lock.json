@@ -7,11 +7,23 @@
       "skillPath": ".agents/skills/antd/SKILL.md",
       "computedHash": "895b18ba67ccfabc32f55eab78210da5324da7540bece3fe7cd07ad3fff659d2"
     },
+    "nestjs-best-practices": {
+      "source": "kadajett/agent-nestjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/nestjs-best-practices/SKILL.md",
+      "computedHash": "58f8a630637be3acce1f118c747d68160346ada8a43d76cb52a5b4c4edaa2d37"
+    },
     "pro-upgrade": {
       "source": "ant-design/ant-design-pro",
       "sourceType": "github",
       "skillPath": ".agents/skills/pro-upgrade/SKILL.md",
       "computedHash": "ed8d648877b01a33142e7fa8760796f187826d57f845541c1a47e8279444e85b"
+    },
+    "zod": {
+      "source": "pproenca/dot-skills",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/zod/SKILL.md",
+      "computedHash": "c69b5133b65643317236707f2cd3e521b4fc6e5ee5fd6c6c00cf62a37dfd0144"
     }
   }
 }

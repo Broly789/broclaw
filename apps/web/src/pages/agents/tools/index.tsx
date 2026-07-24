@@ -1,4 +1,4 @@
-import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import {
@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 import type { AgentsModel } from '@/models/agents';
 import type { ToolConfig } from '../data';
+import { saveBroclawConfig } from '../service';
 import useStyles from '../style';
 
 const { TextArea } = Input;
@@ -31,7 +32,7 @@ const emptyTool: ToolConfig = {
 
 export default function ToolsPage() {
   const { styles } = useStyles();
-  const { config, loading, saving, fetchConfig, updateTools, persist } = (
+  const { config, loading, fetchConfig, updateTools } = (
     useModel as any
   )('agents') as AgentsModel;
 
@@ -57,8 +58,10 @@ export default function ToolsPage() {
     setModalOpen(true);
   };
 
-  const handleDelete = (index: number) => {
-    updateTools(tools.filter((_, i) => i !== index));
+  const handleDelete = async (index: number) => {
+    const next = tools.filter((_, i) => i !== index);
+    updateTools(next);
+    await saveBroclawConfig({ ...config, tools: next });
   };
 
   const handleOk = async () => {
@@ -71,8 +74,7 @@ export default function ToolsPage() {
     }
     updateTools(next);
     setModalOpen(false);
-    // 自动保存
-    setTimeout(() => persist(), 0);
+    await saveBroclawConfig({ ...config, tools: next });
   };
 
   const getActions = (i: number) => [
@@ -83,16 +85,6 @@ export default function ToolsPage() {
   return (
     <PageContainer
       ghost
-      extra={
-        <Button
-          type="primary"
-          icon={<SaveOutlined />}
-          loading={saving}
-          onClick={persist}
-        >
-          保存
-        </Button>
-      }
     >
       <Spin spinning={loading}>
         <Row gutter={[16, 16]}>
@@ -120,10 +112,11 @@ export default function ToolsPage() {
                         size="small"
                         checked={item.enabled}
                         style={{ marginLeft: 8 }}
-                        onChange={(checked) => {
+                        onChange={async (checked) => {
                           const next = [...tools];
                           next[i] = { ...next[i], enabled: checked };
                           updateTools(next);
+                          await saveBroclawConfig({ ...config, tools: next });
                         }}
                       />
                     </span>

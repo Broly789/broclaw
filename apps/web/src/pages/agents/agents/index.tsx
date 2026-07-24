@@ -1,4 +1,4 @@
-import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import {
@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from 'react';
 import type { AgentConfig } from '../data';
 import type { AgentsModel } from '@/models/agents';
+import { saveBroclawConfig } from '../service';
 import useStyles from '../style';
 
 const { TextArea } = Input;
@@ -33,7 +34,7 @@ const emptyAgent: AgentConfig = {
 
 export default function AgentsPage() {
   const { styles } = useStyles();
-  const { config, loading, saving, fetchConfig, updateAgents, persist } = (
+  const { config, loading, fetchConfig, updateAgents } = (
     useModel as any
   )('agents') as AgentsModel;
 
@@ -47,9 +48,7 @@ export default function AgentsPage() {
   const tools = config.tools.filter(t => t.enabled);
 
   useEffect(() => {
-    if (config.agents.length === 0 && config.models.length === 0 && config.tools.length === 0) {
-      fetchConfig();
-    }
+    fetchConfig();
   }, []);
 
   const openCreate = () => {
@@ -84,8 +83,10 @@ export default function AgentsPage() {
     setModalOpen(true);
   };
 
-  const handleDelete = (index: number) => {
-    updateAgents(agents.filter((_, i) => i !== index));
+  const handleDelete = async (index: number) => {
+    const next = agents.filter((_, i) => i !== index);
+    updateAgents(next);
+    await saveBroclawConfig({ ...config, agents: next });
   };
 
   const handleOk = async () => {
@@ -98,8 +99,7 @@ export default function AgentsPage() {
     }
     updateAgents(next);
     setModalOpen(false);
-    // 自动保存
-    setTimeout(() => persist(), 0);
+    await saveBroclawConfig({ ...config, agents: next });
   };
 
   const getActions = (i: number) => [
@@ -110,16 +110,6 @@ export default function AgentsPage() {
   return (
     <PageContainer
       ghost
-      extra={
-        <Button
-          type="primary"
-          icon={<SaveOutlined />}
-          loading={saving}
-          onClick={persist}
-        >
-          保存
-        </Button>
-      }
     >
       <Spin spinning={loading}>
         <Row gutter={[16, 16]}>
@@ -147,10 +137,11 @@ export default function AgentsPage() {
                         size="small"
                         checked={item.enabled}
                         style={{ marginLeft: 8 }}
-                        onChange={(checked) => {
+                        onChange={async (checked) => {
                           const next = [...agents];
                           next[i] = { ...next[i], enabled: checked };
                           updateAgents(next);
+                          await saveBroclawConfig({ ...config, agents: next });
                         }}
                       />
                     </span>
