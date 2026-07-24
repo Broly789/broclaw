@@ -1,6 +1,6 @@
 # Broclaw
 
-Broclaw 配置管理平台 — OpenClaw 的 Web 管理界面。
+Broclaw 配置管理平台 — 类似OpenClaw 的 Web 管理界面。
 
 ## 项目结构
 
