@@ -10,9 +10,13 @@
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "clean": "npm run clean --workspaces --if-present",
+    "start:all": "concurrently -n web,api -c blue,green \"npm start -w @broclaw/web\" \"npm run start:dev -w @broclaw/api\"",
     "web:start": "npm start -w @broclaw/web"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
   }
 }

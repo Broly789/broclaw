@@ -18,11 +18,11 @@ Load when relevant:
 ## Commands
 
 ```bash
-pnpm start:dev     # watch mode, port 3000
-pnpm start:prod    # production
-pnpm build         # compile to dist/
-pnpm test          # unit tests
-pnpm test:e2e      # e2e tests
+npm run start:dev  # watch mode, port 3000
+npm run start:prod # production
+npm run build      # compile to dist/
+npm run test       # unit tests
+npm run test:e2e   # e2e tests
 ```
 
 ## Architecture

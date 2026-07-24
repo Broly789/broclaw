@@ -9,7 +9,7 @@ Broclaw — Broclaw 配置管理平台。Monorepo 结构，含 NestJS 后端 API
 | Package | Manager | Path |
 |---------|---------|------|
 | `@broclaw/web` | npm | `apps/web/` |
-| `@broclaw/api` | pnpm | `apps/api/` |
+| `@broclaw/api` | npm | `apps/api/` |
 
 ## Commands
 
@@ -17,6 +17,7 @@ Broclaw — Broclaw 配置管理平台。Monorepo 结构，含 NestJS 后端 API
 npm run lint          # lint all workspaces
 npm run build         # build all workspaces
 npm run web:start     # start frontend only
+npm run start:all     # start web + api in parallel
 ```
 
 ## Skills
