@@ -70,7 +70,7 @@ export default [
     path: '/dashboard',
     name: 'dashboard',
     icon: 'dashboard',
-    access: 'canAdmin',
+    access: 'canDashboard',
     routes: [
       {
         path: '/dashboard',

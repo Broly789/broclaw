@@ -29,15 +29,22 @@ npm run test:e2e   # e2e tests
 
 ```
 src/
-├── main.ts                       # entry: CORS + ZodValidationPipe + Swagger
+├── main.ts                       # entry: CORS + ZodValidationPipe + Swagger + Interceptor + Filter
 ├── app.module.ts                 # root module
+├── common/
+│   ├── interceptors/
+│   │   └── response.interceptor.ts   # 全局成功响应包装 { code, data, msg }
+│   ├── filters/
+│   │   └── http-exception.filter.ts  # 全局异常响应 { code, data, msg, error }
+│   └── dto/
+│       └── api-response.dto.ts       # 通用响应 DTO
 ├── agents/                       # feature module
 │   ├── agents.module.ts
 │   ├── agents.controller.ts      # GET/POST /agents/config
 │   ├── agents.service.ts         # read/write ~/.broclaw/broclaw.json
 │   ├── dto/
 │   │   ├── agents.schema.ts      # Zod schemas + createZodDto classes
-│   │   └── config-response.dto.ts # Swagger response DTOs
+│   │   └── config-response.dto.ts # Swagger response DTOs (含 code/data/msg)
 │   └── interfaces/
 │       ├── agents-config.interface.ts  # flat frontend format
 │       └── broclaw-storage.interface.ts  # openclaw-like storage format
@@ -48,7 +55,9 @@ src/
 - **Global pipe**: `ZodValidationPipe` (strip unknown, no forbidNonWhitelisted)
 - **CORS** enabled
 - **Swagger** at `/docs`
-- **Response wrapper**: `{ data: T }` for GET, `{ data: T, success: boolean }` for POST
+- **Global response interceptor**: wraps all successful responses → `{ code: 0, data: <原始返回>, msg: "success" }`
+- **Global exception filter**: catches all exceptions → `{ code: <HTTP状态码>, data: null, msg: "<错误消息>", error: "<异常类型>" }`
+- **Controller convention**: return raw business data only; wrapper is applied globally
 - **Validation**: Zod schemas only — no class-validator
 - **DTO**: `createZodDto(Schema)` → class for Swagger compat; `z.infer` for types
 
@@ -79,11 +88,11 @@ src/
 
 ### Error Handling
 - Throw `NotFoundException`, `InternalServerErrorException` from services
-- Let the framework exception filter handle formatting
+- `AllExceptionsFilter` catches all exceptions globally → formats as `{ code, data: null, msg, error }`
 - Logger for service-level errors
 
 ## Project Config
 
 - `nest-cli.json`: `deleteOutDir: true`
-- `main.ts`: CORS + ZodValidationPipe + Swagger
+- `main.ts`: CORS + ZodValidationPipe + Swagger + ResponseInterceptor + AllExceptionsFilter
 - Port via `process.env.PORT ?? 3000`

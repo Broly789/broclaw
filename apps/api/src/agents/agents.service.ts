@@ -1,8 +1,17 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import type { AgentConfig, AgentsConfig, ModelConfig, ToolConfig } from './interfaces/agents-config.interface';
+import type {
+  AgentConfig,
+  AgentsConfig,
+  ModelConfig,
+  ToolConfig,
+} from './interfaces/agents-config.interface';
 import type {
   BroclawStorage,
   ProviderConfig,
@@ -31,7 +40,9 @@ export class AgentsService {
     const storage = this.readStorage();
 
     if (partial.models !== undefined) {
-      storage.models = { providers: this.groupModelsByProvider(partial.models) };
+      storage.models = {
+        providers: this.groupModelsByProvider(partial.models),
+      };
     }
     if (partial.agents !== undefined) {
       storage.agents = {
@@ -51,7 +62,10 @@ export class AgentsService {
       };
     }
 
-    storage.meta = { version: STORAGE_VERSION, updatedAt: new Date().toISOString() };
+    storage.meta = {
+      version: STORAGE_VERSION,
+      updatedAt: new Date().toISOString(),
+    };
     this.writeStorage(storage);
     return this.toFlat(storage);
   }
@@ -102,7 +116,9 @@ export class AgentsService {
   private toFlat(storage: BroclawStorage): AgentsConfig {
     const models: ModelConfig[] = [];
     if (storage.models?.providers) {
-      for (const [providerName, provider] of Object.entries(storage.models.providers)) {
+      for (const [providerName, provider] of Object.entries(
+        storage.models.providers,
+      )) {
         for (const m of provider.models) {
           models.push({
             name: m.name,
@@ -138,7 +154,9 @@ export class AgentsService {
     return { agents, models, tools };
   }
 
-  private groupModelsByProvider(flat: ModelConfig[]): Record<string, ProviderConfig> {
+  private groupModelsByProvider(
+    flat: ModelConfig[],
+  ): Record<string, ProviderConfig> {
     const providers: Record<string, ProviderConfig> = {};
     for (const m of flat) {
       const key = m.provider || 'default';

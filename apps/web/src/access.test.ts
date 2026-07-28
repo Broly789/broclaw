@@ -61,4 +61,40 @@ describe('access', () => {
 
     expect(result.canAdmin).toBeFalsy();
   });
+
+  it('should return canDashboard true when user has admin access', () => {
+    const initialState = {
+      currentUser: { userid: '1', name: 'Admin', access: 'admin' },
+    };
+
+    const result = access(initialState);
+
+    expect(result.canDashboard).toBe(true);
+  });
+
+  it('should return canDashboard true when user has ai_assistant access', () => {
+    const initialState = {
+      currentUser: { userid: '2', name: 'AI Assistant', access: 'ai_assistant' },
+    };
+
+    const result = access(initialState);
+
+    expect(result.canDashboard).toBe(true);
+  });
+
+  it('should return canDashboard false when user has user access', () => {
+    const initialState = {
+      currentUser: { userid: '3', name: 'Regular User', access: 'user' },
+    };
+
+    const result = access(initialState);
+
+    expect(result.canDashboard).toBe(false);
+  });
+
+  it('should return canDashboard false when initialState is undefined', () => {
+    const result = access(undefined);
+
+    expect(result.canDashboard).toBeFalsy();
+  });
 });
